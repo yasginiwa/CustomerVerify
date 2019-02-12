@@ -1,9 +1,15 @@
-var sql = require('./module/mssqlUtil.js');
+var sql = require('./module/DBUtil.js');
+var express = require('express');
+var bodyParser = require('body-parser');
 
-sql.queryWithParams('select * from t_custom where t_id = ', 10, function (res) {
-    console.log(res);
-}, function (err) {
-    console.log(err);
+var app = new express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+
+app.post('/registry', function (req, res) {
+
 })
+
 
 
