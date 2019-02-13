@@ -17,10 +17,10 @@ const config = {
 /**
  *  插入
  */
-exports.add = function (sqlValue, successCallback, failCallback) {
+exports.add = function (table, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
         console.log(sqlValue);
-        return pool.query(`insert into t_customer values(${sqlValue})`);
+        return pool.query(`insert into ${table} values(${sqlValue})`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -31,9 +31,9 @@ exports.add = function (sqlValue, successCallback, failCallback) {
 /**
  *  删除
  */
-exports.del = function (sqlParma, sqlValue, successCallback, failCallback) {
+exports.del = function (table, sqlParma, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`delete from t_customer where ${sqlParma} = ${sqlValue}`);
+        return pool.query(`delete from ${table} where ${sqlParma} = ${sqlValue}`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -44,9 +44,9 @@ exports.del = function (sqlParma, sqlValue, successCallback, failCallback) {
 /***
  * 查询
  */
-exports.queryWithParams = function (sqlParam, sqlValue, successCallback, failCallback) {
+exports.queryWithParams = function (table, sqlParam, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`select * from t_customer where ${sqlParam} = ${sqlValue}`);
+        return pool.query(`select * from ${table} where ${sqlParam} = ${sqlValue}`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -57,9 +57,9 @@ exports.queryWithParams = function (sqlParam, sqlValue, successCallback, failCal
 /**
  *  修改
  */
-exports.update = function (sqlParam, sqlValue, rangeParam, rangeValue, successCallback, failCallback) {
+exports.update = function (table, sqlParam, sqlValue, rangeParam, rangeValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`update t_customer set ${sqlParam} = ${sqlValue} where ${rangeParam} = ${rangeValue}`);
+        return pool.query(`update ${table} set ${sqlParam} = ${sqlValue} where ${rangeParam} = ${rangeValue}`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {

@@ -12,11 +12,10 @@ app.post('/registry', function (req, res) {
         company = req.body.company,
         contact = req.body.contact,
         phone = req.body.phone,
-        authstatus = (req.body.authstatus.length) ? req.body.authstatus : 0,
-        recievestatus = (req.body.recievestatus.length) ? req.body.recievestatus : 0,
-        ticket = (req.body.ticket.length) ? req.body.ticket : 'NULL';
-        sqlValue = `'${openid}', '${company}', '${contact}', '${phone}', '${authstatus}', '${recievestatus}', ${ticket}`;
-    db.add(sqlValue, function (result) {
+        authstatus = (req.body.authstatus.length) ? req.body.authstatus : 0
+        table = 't_registry';
+        sqlValue = `'${openid}', '${company}', '${contact}', '${phone}', '${authstatus}'`;
+    db.add(table, sqlValue, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -31,6 +30,6 @@ app.post('/registry', function (req, res) {
     })
 });
 
-app.listen(18000, '192.168.10.214');
+app.listen(18000, '192.168.0.172');
 
 
