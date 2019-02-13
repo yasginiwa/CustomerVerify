@@ -19,7 +19,8 @@ const config = {
  */
 exports.add = function (sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`insert into t_custom values(${sqlValue})`);
+        console.log(sqlValue);
+        return pool.query(`insert into t_customer values(${sqlValue})`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -32,7 +33,7 @@ exports.add = function (sqlValue, successCallback, failCallback) {
  */
 exports.del = function (sqlParma, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`delete from t_custom where ${sqlParma} = ${sqlValue}`);
+        return pool.query(`delete from t_customer where ${sqlParma} = ${sqlValue}`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -45,7 +46,7 @@ exports.del = function (sqlParma, sqlValue, successCallback, failCallback) {
  */
 exports.queryWithParams = function (sqlParam, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`select * from t_custom where ${sqlParam} = ${sqlValue}`);
+        return pool.query(`select * from t_customer where ${sqlParam} = ${sqlValue}`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -58,7 +59,7 @@ exports.queryWithParams = function (sqlParam, sqlValue, successCallback, failCal
  */
 exports.update = function (sqlParam, sqlValue, rangeParam, rangeValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`update t_custom set ${sqlParam} = ${sqlValue} where ${rangeParam} = ${rangeValue}`);
+        return pool.query(`update t_customer set ${sqlParam} = ${sqlValue} where ${rangeParam} = ${rangeValue}`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
