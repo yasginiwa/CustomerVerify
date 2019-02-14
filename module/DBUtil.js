@@ -46,9 +46,10 @@ exports.del = function (table, sqlParma, sqlValue, successCallback, failCallback
  */
 exports.queryWithParams = function (table, sqlParam, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`select * from ${table} where ${sqlParam} = ${sqlValue}`);
+        return pool.query(`select * from ${table} where ${sqlParam} = '${sqlValue}'`);
     }).then(result => {
-        successCallback(result);
+        successCallback(result.recordset[0]);
+        console.log(result);
     }).catch(err => {
         failCallback(err);
     });
