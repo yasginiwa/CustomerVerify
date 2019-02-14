@@ -48,8 +48,7 @@ exports.queryWithParams = function (table, sqlParam, sqlValue, successCallback, 
     new sql.ConnectionPool(config).connect().then(pool => {
         return pool.query(`select * from ${table} where ${sqlParam} = '${sqlValue}'`);
     }).then(result => {
-        successCallback(result.recordset[0]);
-        console.log(result);
+        successCallback(result.recordset);
     }).catch(err => {
         failCallback(err);
     });

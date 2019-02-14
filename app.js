@@ -49,8 +49,27 @@ app.post('/login', function (req, res) {
             });
         })
 
-})
+});
 
-app.listen(18000, '192.168.10.214');
+app.post('/auth', function (req, res) {
+    var authstatus = req.body.authstatus,
+        sqlParam = 'authstatus',
+        table = 't_registry';
+    db.queryWithParams(table, sqlParam, authstatus, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+app.listen(18000, '192.168.0.172');
 
 
