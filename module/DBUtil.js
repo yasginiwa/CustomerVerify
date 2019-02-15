@@ -59,7 +59,7 @@ exports.queryWithParams = function (table, sqlParam, sqlValue, successCallback, 
  */
 exports.update = function (table, sqlParam, sqlValue, rangeParam, rangeValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`update ${table} set ${sqlParam} = ${sqlValue} where ${rangeParam} = ${rangeValue}`);
+        return pool.query(`update ${table} set ${sqlParam} = '${sqlValue}' where ${rangeParam} = '${rangeValue}'`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {

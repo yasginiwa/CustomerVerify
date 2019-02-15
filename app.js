@@ -60,7 +60,7 @@ app.post('/auth', function (req, res) {
             code: 1,
             msg: '提交成功',
             result: result
-        })
+        });
     }, function (error) {
         res.json({
             code: 0,
@@ -70,6 +70,27 @@ app.post('/auth', function (req, res) {
     })
 });
 
-app.listen(18000, '192.168.0.172');
+app.post('/authupdate', function (req, res) {
+    var authstatus = req.body.authstatus,
+        sqlValue = req.body.sqlValue,
+        r_id = req.body.r_id,
+        rangeValue = req.body.rangeValue,
+        table = 't_registry';
+    db.update(table, authstatus, sqlValue, r_id, rangeValue, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        });
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+app.listen(18000, '192.168.10.214');
 
 
