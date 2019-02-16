@@ -19,7 +19,6 @@ const config = {
  */
 exports.add = function (table, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        console.log(sqlValue);
         return pool.query(`insert into ${table} values(${sqlValue})`);
     }).then(result => {
         successCallback(result);
@@ -42,11 +41,37 @@ exports.del = function (table, sqlParma, sqlValue, successCallback, failCallback
 };
 
 /***
- * 查询
+ * 带参数带值条件查询
  */
 exports.queryWithParams = function (table, sqlParam, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
         return pool.query(`select * from ${table} where ${sqlParam} = '${sqlValue}'`);
+    }).then(result => {
+        successCallback(result.recordset);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
+
+/***
+ * 全部查询
+ */
+exports.queryAll = function (table, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`select * from ${table}`);
+    }).then(result => {
+        successCallback(result.recordset);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
+
+/**
+ * 带多参数带多值全部查询
+ */
+exports.queryAllWithParams = function (table, sqlParams, sqlValues, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`select * from ${table} where ${sqlParams[0]} = '${sqlValues[0]}' and ${sqlParams[1]} = '${sqlValues[1]}' and ${sqlParams[2]} = '${sqlValues[2]}'`);
     }).then(result => {
         successCallback(result.recordset);
     }).catch(err => {
