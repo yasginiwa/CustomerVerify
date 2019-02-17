@@ -17,8 +17,9 @@ app.post('/registry', function (req, res) {
         phone = req.body.phone,
         authstatus = (req.body.authstatus.length) ? req.body.authstatus : 0,
         regdate = (req.body.regdate),
+        numbers = req.body.numbers,
         table = 't_registry';
-    sqlValue = `'${openid}', '${company}', '${contact}', '${phone}', '${authstatus}', '${regdate}'`;
+    sqlValue = `'${openid}', '${company}', '${contact}', '${phone}', '${authstatus}', '${regdate}', ${numbers}`;
     db.add(table, sqlValue, function (result) {
         res.json({
             code: 1,
@@ -82,12 +83,12 @@ app.post('/auth', function (req, res) {
  * 审核客户 改变客户审核状态
  */
 app.post('/authupdate', function (req, res) {
-    var authstatus = req.body.authstatus,
-        sqlValue = req.body.sqlValue,
+    var sqlParams = req.body.sqlParams,
+        sqlValues = req.body.sqlValues,
         r_id = req.body.r_id,
         rangeValue = req.body.rangeValue,
         table = 't_registry';
-    db.update(table, authstatus, sqlValue, r_id, rangeValue, function (result) {
+    db.updateWithParams(table, sqlParams, sqlValues, r_id, rangeValue, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -125,6 +126,6 @@ app.post('/queryauth', function (req, res) {
 });
 
 
-app.listen(18000, '192.168.10.214');
+app.listen(18000, '192.168.0.172');
 
 
