@@ -32,7 +32,7 @@ exports.add = function (table, sqlValue, successCallback, failCallback) {
  */
 exports.del = function (table, sqlParma, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`delete from ${table} where ${sqlParma} = ${sqlValue}`);
+        return pool.query(`delete from ${table} where ${sqlParma} = '${sqlValue}'`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {

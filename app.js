@@ -125,7 +125,29 @@ app.post('/queryauth', function (req, res) {
     })
 });
 
+/**
+ * 认证时删除多余无用的注册信息
+ */
+app.post('/authdel', function (req, res) {
+    var r_id = req.body.r_id,
+        sqlValue = req.body.sqlValue,
+        table = 't_registry';
+    db.del(table, r_id, sqlValue, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
 
-app.listen(18000, '192.168.0.172');
+
+app.listen(18000, '192.168.10.214');
 
 
