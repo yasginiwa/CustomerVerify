@@ -178,9 +178,11 @@ app.post('/addticket', function (req, res) {
 /**
  * 查询客户总卡券数接口
  */
-app.get('/tickettotalcount', function (req, res) {
-    var table = 't_tickets';
-    db.queryTotalCount(table, function (result) {
+app.post('/tickettotalcount', function (req, res) {
+    var sqlParam = req.body.sqlParam,
+        sqlValue = req.body.sqlValue,
+        table = 't_tickets';
+    db.queryCountWithParam(table, sqlParam, sqlValue, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -199,10 +201,10 @@ app.get('/tickettotalcount', function (req, res) {
  * 查询客户未分发卡券（有效卡券）总数接口
  */
 app.post('/ticketvalidcount', function (req, res) {
-    var sqlParam = req.body.sqlParam,
-        sqlValue = req.body.sqlValue,
+    var sqlParams = req.body.sqlParams,
+        sqlValues = req.body.sqlValues,
         table = 't_tickets';
-    db.queryCountWithParam(table, sqlParam, sqlValue, function(result) {
+    db.queryCountWithParams(table, sqlParams, sqlValues, function(result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -218,6 +220,6 @@ app.post('/ticketvalidcount', function (req, res) {
 });
 
 
-app.listen(18000, '192.168.10.214');
+app.listen(18000, '192.168.0.172');
 
 

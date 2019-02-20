@@ -110,7 +110,7 @@ exports.updateWithParams = function (table, sqlParams, sqlValues, rangeParam, ra
  */
 exports.queryTotalCount = function (table, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`select count(*) as totalcount from ${table}`);
+        return pool.query(`select count(*) from ${table}`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -123,7 +123,7 @@ exports.queryTotalCount = function (table, successCallback, failCallback) {
  */
 exports.queryCountWithParam = function (table, sqlParam, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`select count(*) from ${table} where ${sqlParam} = '${sqlValue}'`);
+        return pool.query(`select count(*) as totalcount from ${table} where ${sqlParam} = '${sqlValue}'`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -136,7 +136,7 @@ exports.queryCountWithParam = function (table, sqlParam, sqlValue, successCallba
  */
 exports.queryCountWithParams = function (table, sqlParams, sqlValues, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`select count(*) from ${table} where ${sqlParams[0]} = '${sqlValue[0]}' and ${sqlParams[1]} = '${sqlValue[1]}'`);
+        return pool.query(`select count(*) as validcount from ${table} where ${sqlParams[0]} = '${sqlValues[0]}' and ${sqlParams[1]} = '${sqlValues[1]}'`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
