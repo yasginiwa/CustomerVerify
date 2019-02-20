@@ -147,6 +147,76 @@ app.post('/authdel', function (req, res) {
     })
 });
 
+/**
+ * 添加卡券到数据库接口
+ */
+app.post('/addticket', function (req, res) {
+    var company = req.body.company,
+        ticketcode = req.body.ticketcode,
+        ticketno = req.body.ticketno,
+        productname = req.body.productname,
+        price = req.body.price,
+        wxopenid = req.body.wxopenid,
+        distributestatus = req.body.distributestatus,   // 状态0为未使用 1为已使用
+        table = 't_tickets';
+    sqlValue = `'${company}', '${ticketcode}', '${ticketno}', '${productname}', '${price}', '${wxopenid}', '${distributestatus}'`;
+    db.add(table, sqlValue, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+/**
+ * 查询客户总卡券数接口
+ */
+app.get('/tickettotalcount', function (req, res) {
+    var table = 't_tickets';
+    db.queryTotalCount(table, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+/**
+ * 查询客户未分发卡券（有效卡券）总数接口
+ */
+app.post('/ticketvalidcount', function (req, res) {
+    var sqlParam = req.body.sqlParam,
+        sqlValue = req.body.sqlValue,
+        table = 't_tickets';
+    db.queryCountWithParam(table, sqlParam, sqlValue, function(result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
 
 app.listen(18000, '192.168.10.214');
 

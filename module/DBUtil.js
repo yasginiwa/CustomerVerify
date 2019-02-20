@@ -104,3 +104,42 @@ exports.updateWithParams = function (table, sqlParams, sqlValues, rangeParam, ra
         failCallback(err);
     });
 };
+
+/**
+ * 查询表记录总数
+ */
+exports.queryTotalCount = function (table, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`select count(*) as totalcount from ${table}`);
+    }).then(result => {
+        successCallback(result);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
+
+/**
+ * 带一个参数查询记录个数
+ */
+exports.queryCountWithParam = function (table, sqlParam, sqlValue, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`select count(*) from ${table} where ${sqlParam} = '${sqlValue}'`);
+    }).then(result => {
+        successCallback(result);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
+
+/**
+ * 带多参数查询记录个数
+ */
+exports.queryCountWithParams = function (table, sqlParams, sqlValues, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`select count(*) from ${table} where ${sqlParams[0]} = '${sqlValue[0]}' and ${sqlParams[1]} = '${sqlValue[1]}'`);
+    }).then(result => {
+        successCallback(result);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
