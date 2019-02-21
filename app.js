@@ -42,7 +42,7 @@ app.post('/login', function (req, res) {
     var username = req.body.username,
         sqlParam = 'username',
         table = 't_user';
-    db.queryWithParams(table, sqlParam, username, function (result) {
+    db.queryWithParam(table, sqlParam, username, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -176,9 +176,32 @@ app.post('/addticket', function (req, res) {
 });
 
 /**
- * 查询客户总卡券数接口
+ * 查询客户卡券可分发总数(合同规定券数量)
  */
 app.post('/tickettotalcount', function (req, res) {
+    var col = req.body.col,
+        sqlParam = req.body.sqlParam,
+        sqlValue = req.body.sqlValue,
+        table = 't_registry';
+    db.queryColWithParam(table, col, sqlParam, sqlValue, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+/**
+ * 查询客户已添加卡券数量
+ */
+app.post('/ticketaddcount', function (req, res) {
     var sqlParam = req.body.sqlParam,
         sqlValue = req.body.sqlValue,
         table = 't_tickets';
@@ -198,13 +221,13 @@ app.post('/tickettotalcount', function (req, res) {
 });
 
 /**
- * 查询客户未分发卡券（有效卡券）总数接口
+ * 查询客户所有卡券
  */
-app.post('/ticketvalidcount', function (req, res) {
-    var sqlParams = req.body.sqlParams,
-        sqlValues = req.body.sqlValues,
+app.post('/tickets', function (req, res) {
+    var sqlParam = req.body.sqlParam,
+        sqlValue = req.body.sqlValue,
         table = 't_tickets';
-    db.queryCountWithParams(table, sqlParams, sqlValues, function(result) {
+    db.queryWithParam(table, sqlParam, sqlValue, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -219,7 +242,6 @@ app.post('/ticketvalidcount', function (req, res) {
     })
 });
 
-
-app.listen(18000, '192.168.0.172');
+app.listen(18000, '192.168.10.214');
 
 

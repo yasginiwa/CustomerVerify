@@ -43,7 +43,7 @@ exports.del = function (table, sqlParma, sqlValue, successCallback, failCallback
 /***
  * 带参数带值条件查询
  */
-exports.queryWithParams = function (table, sqlParam, sqlValue, successCallback, failCallback) {
+exports.queryWithParam = function (table, sqlParam, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
         return pool.query(`select * from ${table} where ${sqlParam} = '${sqlValue}'`);
     }).then(result => {
@@ -78,6 +78,7 @@ exports.queryAllWithParams = function (table, sqlParams, sqlValues, successCallb
         failCallback(err);
     });
 };
+
 
 /**
  *  修改
@@ -123,7 +124,7 @@ exports.queryTotalCount = function (table, successCallback, failCallback) {
  */
 exports.queryCountWithParam = function (table, sqlParam, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`select count(*) as totalcount from ${table} where ${sqlParam} = '${sqlValue}'`);
+        return pool.query(`select count(*) as addcount from ${table} where ${sqlParam} = '${sqlValue}'`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -132,11 +133,11 @@ exports.queryCountWithParam = function (table, sqlParam, sqlValue, successCallba
 };
 
 /**
- * 带多参数查询记录个数
+ * 查询带参数某列数据
  */
-exports.queryCountWithParams = function (table, sqlParams, sqlValues, successCallback, failCallback) {
+exports.queryColWithParam = function (table, col, sqlParam, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`select count(*) as validcount from ${table} where ${sqlParams[0]} = '${sqlValues[0]}' and ${sqlParams[1]} = '${sqlValues[1]}'`);
+        return pool.query(`select ${col} from ${table} where ${sqlParam} = '${sqlValue}'`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
