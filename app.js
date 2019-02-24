@@ -1,26 +1,83 @@
 var db = require('./module/DBUtil.js');
 var express = require('express');
 var bodyParser = require('body-parser');
+var https = require('https');
+var fs = require('fs');
+var request = require('request');
 
 var app = new express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+
+/**
+ * 获取wxopenid
+ */
+app.post('/getwxopenid', function (req, res) {
+   var appid = 'wx7fc7b53df0fe91d2',
+       secret = '64fa906971b92a829115e5011ba92aa5',
+       js_code = req.body.js_code,
+       grant_type= 'authorization_code',
+       url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${js_code}&grant_type=${grant_type}`;
+
+   request(url, function (error, response) {
+       if (!error && response.statusCode === 200) {
+           var result = {
+               wxopenid: JSON.parse(response.body).openid
+           };
+           res.json({
+               code: 1,
+               msg: '提交成功',
+               result: result
+           });
+       } else {
+           res.json({
+               code: 0,
+               msg: '提交失败',
+               result: error
+           });
+       }
+   })
+});
+
+
+/**
+ * 返回所有的wxopenid和对应的公司名称
+ */
+app.post('/querywxopenids', function (req, res) {
+    var cols = req.body.cols,
+        table = 't_registry';
+   db.queryColAll(table, cols, function (result) {
+       res.json({
+           code: 1,
+           msg: '提交成功',
+           result: result
+       })
+   }, function (error) {
+       res.json({
+           code: 0,
+           msg: '提交失败',
+           result: error
+       });
+   })
+});
+
+
 /**
  * 客户注册
  */
 app.post('/registry', function (req, res) {
-    var openid = req.body.openid,
+    var wxopenid = req.body.wxopenid,
         company = req.body.company,
         contact = req.body.contact,
         phone = req.body.phone,
         authstatus = (req.body.authstatus.length) ? req.body.authstatus : 0,
         regdate = (req.body.regdate),
         numbers = req.body.numbers,
-        table = 't_registry';
-    sqlValue = `'${openid}', '${company}', '${contact}', '${phone}', '${authstatus}', '${regdate}', ${numbers}`;
-    db.add(table, sqlValue, function (result) {
+        table = 't_registry',
+        sqlValues = `'${wxopenid}', '${company}', '${contact}', '${phone}', '${authstatus}', '${regdate}', ${numbers}`;
+    db.add(table, sqlValues, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -242,6 +299,38 @@ app.post('/tickets', function (req, res) {
     })
 });
 
-app.listen(18000, '192.168.10.214');
 
+/**
+ * 更新卡券发送后的状态
+ */
+app.post('/updatedistributestatus', function (req, res) {
+    var sqlParam = req.body.sqlParam,
+        sqlValue = req.body.sqlValue,
+        rangeParam = req.body.rangeParam,
+        rangeValue = req.body.rangeValue,
+        table = 't_tickets';
+    db.update(table, sqlParam, sqlValue, rangeParam, rangeValue,function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+
+// var options = {
+//     key: fs.readFileSync('cert/server.key', 'utf-8'),
+//     cert: fs.readFileSync('cert/server.crt', 'utf-8')
+// };
+
+// https.createServer(options, app).listen(10443, '192.168.5.248');
+
+app.listen(18000, '192.168.0.172');
 

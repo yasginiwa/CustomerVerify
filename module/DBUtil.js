@@ -17,9 +17,9 @@ const config = {
 /**
  *  插入
  */
-exports.add = function (table, sqlValue, successCallback, failCallback) {
+exports.add = function (table, sqlValues, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`insert into ${table} values(${sqlValue})`);
+        return pool.query(`insert into ${table} values(${sqlValues})`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -138,6 +138,19 @@ exports.queryCountWithParam = function (table, sqlParam, sqlValue, successCallba
 exports.queryColWithParam = function (table, col, sqlParam, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
         return pool.query(`select ${col} from ${table} where ${sqlParam} = '${sqlValue}'`);
+    }).then(result => {
+        successCallback(result);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
+
+/**
+ * 查询带参数所有数据
+ */
+exports.queryColAll = function (table, cols, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`select ${cols[0]}, ${cols[1]}, ${cols[2]}, ${cols[3]}, ${cols[4]} from ${table}`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
