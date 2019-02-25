@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var https = require('https');
 var fs = require('fs');
 var request = require('request');
+var querystring = require('querystring');
 
 var app = new express();
 
@@ -15,30 +16,81 @@ app.use(bodyParser.urlencoded({extended: false}));
  * 获取wxopenid
  */
 app.post('/getwxopenid', function (req, res) {
-   var appid = 'wx7fc7b53df0fe91d2',
-       secret = '64fa906971b92a829115e5011ba92aa5',
-       js_code = req.body.js_code,
-       grant_type= 'authorization_code',
-       url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${js_code}&grant_type=${grant_type}`;
+    var appid = 'wx7fc7b53df0fe91d2',
+        secret = '64fa906971b92a829115e5011ba92aa5',
+        js_code = req.body.js_code,
+        grant_type = 'authorization_code',
+        url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${js_code}&grant_type=${grant_type}`;
 
-   request(url, function (error, response) {
-       if (!error && response.statusCode === 200) {
-           var result = {
-               wxopenid: JSON.parse(response.body).openid
-           };
-           res.json({
-               code: 1,
-               msg: '提交成功',
-               result: result
-           });
-       } else {
-           res.json({
-               code: 0,
-               msg: '提交失败',
-               result: error
-           });
-       }
-   })
+    request(url, function (error, response) {
+        if (!error && response.statusCode === 200) {
+            var result = {
+                wxopenid: JSON.parse(response.body).openid
+            };
+            res.json({
+                code: 1,
+                msg: '提交成功',
+                result: result
+            });
+        } else {
+            res.json({
+                code: 0,
+                msg: '提交失败',
+                result: error
+            });
+        }
+    })
+});
+
+
+/**
+ * 生成卡券
+ */
+app.post('/icapi/tmticket', function (req, res) {
+    var data = {
+        token: req.body.token,
+        sign: req.body.sign,
+        content: req.body.content,
+    };
+    var dataStr = querystring.stringify(data);
+    var url = 'http://crowncake.cn:27777/icapi/tmticket';
+    request.post({
+        url: url,
+        headers: {
+            "Content-length": dataStr.length,
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: dataStr
+    }, function (error, response, body) {
+        if (!error && response.statusCode === 200) {    // 请求成功的处理逻辑
+            res.send(body);
+        }
+    })
+});
+
+/**
+ * 查询卡券
+ */
+app.post('/icapi/tmticketquery', function (req, res) {
+    var data = {
+        token: req.body.token,
+        sign: req.body.sign,
+        content: req.body.content,
+    };
+    var dataStr = querystring.stringify(data);
+    var url = 'http://crowncake.cn:27777/icapi/tmticketquery';
+    request.post({
+        url: url,
+        headers: {
+            "Content-length": dataStr.length,
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: dataStr
+    }, function (error, response, body) {
+        if (!error && response.statusCode === 200) {    // 请求成功的处理逻辑
+            res.send(body);
+        }
+    })
 });
 
 
@@ -48,19 +100,19 @@ app.post('/getwxopenid', function (req, res) {
 app.post('/querywxopenids', function (req, res) {
     var cols = req.body.cols,
         table = 't_registry';
-   db.queryColAll(table, cols, function (result) {
-       res.json({
-           code: 1,
-           msg: '提交成功',
-           result: result
-       })
-   }, function (error) {
-       res.json({
-           code: 0,
-           msg: '提交失败',
-           result: error
-       });
-   })
+    db.queryColAll(table, cols, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
 });
 
 
@@ -309,7 +361,7 @@ app.post('/updatedistributestatus', function (req, res) {
         rangeParam = req.body.rangeParam,
         rangeValue = req.body.rangeValue,
         table = 't_tickets';
-    db.update(table, sqlParam, sqlValue, rangeParam, rangeValue,function (result) {
+    db.update(table, sqlParam, sqlValue, rangeParam, rangeValue, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -332,5 +384,5 @@ app.post('/updatedistributestatus', function (req, res) {
 
 // https.createServer(options, app).listen(10443, '192.168.5.248');
 
-app.listen(18000, '192.168.0.172');
+app.listen(18000, '192.168.10.214');
 
