@@ -126,9 +126,10 @@ app.post('/registry', function (req, res) {
         phone = req.body.phone,
         authstatus = (req.body.authstatus.length) ? req.body.authstatus : 0,
         regdate = (req.body.regdate),
+        expectnumbers = req.body.expectnumbers,
         numbers = req.body.numbers,
         table = 't_registry',
-        sqlValues = `'${wxopenid}', '${company}', '${contact}', '${phone}', '${authstatus}', '${regdate}', ${numbers}`;
+        sqlValues = `'${wxopenid}', '${company}', '${contact}', '${phone}', '${authstatus}', '${regdate}', ${expectnumbers}, ${numbers}`;
     db.add(table, sqlValues, function (result) {
         res.json({
             code: 1,
@@ -267,8 +268,9 @@ app.post('/addticket', function (req, res) {
         price = req.body.price,
         wxopenid = req.body.wxopenid,
         distributestatus = req.body.distributestatus,   // 状态0为未使用 1为已使用
+        distributedate = req.body.distributedate,
         table = 't_tickets';
-    sqlValue = `'${company}', '${ticketcode}', '${ticketno}', '${productname}', '${price}', '${wxopenid}', '${distributestatus}'`;
+    sqlValue = `'${wxopenid}', '${company}', '${ticketcode}', '${ticketno}', '${productname}', '${price}',  '${distributestatus}', '${distributedate}'`;
     db.add(table, sqlValue, function (result) {
         res.json({
             code: 1,
@@ -379,7 +381,7 @@ app.post('/updatedistributestatus', function (req, res) {
 
 // var options = {
 //     key: fs.readFileSync('cert/server.key', 'utf-8'),
-//     cert: fs.readFileSync('cert/server.crt', 'utf-8')
+//     cert: fs.readFileSync('cert/server.pem', 'utf-8')
 // };
 
 // https.createServer(options, app).listen(10443, '192.168.5.248');
