@@ -126,10 +126,8 @@ app.post('/registry', function (req, res) {
         phone = req.body.phone,
         authstatus = (req.body.authstatus.length) ? req.body.authstatus : 0,
         regdate = (req.body.regdate),
-        expectnumbers = req.body.expectnumbers,
-        numbers = req.body.numbers,
         table = 't_registry',
-        sqlValues = `'${wxopenid}', '${company}', '${contact}', '${phone}', '${authstatus}', '${regdate}', ${expectnumbers}, ${numbers}`;
+        sqlValues = `'${wxopenid}', '${company}', '${contact}', '${phone}', '${authstatus}', '${regdate}'`;
     db.add(table, sqlValues, function (result) {
         res.json({
             code: 1,
@@ -291,10 +289,10 @@ app.post('/addticket', function (req, res) {
  */
 app.post('/tickettotalcount', function (req, res) {
     var col = req.body.col,
-        sqlParam = req.body.sqlParam,
-        sqlValue = req.body.sqlValue,
-        table = 't_registry';
-    db.queryColWithParam(table, col, sqlParam, sqlValue, function (result) {
+        sqlParams = req.body.sqlParams,
+        sqlValues = req.body.sqlValues,
+        table = 't_expecttickets';
+    db.queryColWithParams(table, col, sqlParams, sqlValues, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -364,6 +362,78 @@ app.post('/updatedistributestatus', function (req, res) {
         rangeValue = req.body.rangeValue,
         table = 't_tickets';
     db.update(table, sqlParam, sqlValue, rangeParam, rangeValue, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+/**
+ * 添加申领卡券到数据库
+ */
+app.post('/addexpectticket', function (req, res) {
+    var wxopenid = req.body.wxopenid,
+        company = req.body.company,
+        productname = req.body.productname,
+        price = req.body.price,
+        expectnumbers = req.body.expectnumbers,
+        expectdate = req.body.expectdate,
+        authstatus = req.body.authstatus,
+        table = 't_expecttickets';
+    var sqlValues = `'${wxopenid}', '${company}', '${productname}', ${price}, '${expectnumbers}', '${expectdate}', '${authstatus}'`;
+    db.add(table, sqlValues, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+/**
+ * 查询申领卡券审核状态为未审核的记录
+ */
+app.post('/expectunauth', function (req, res) {
+        sqlParams = req.body.sqlParams,
+        sqlValues = req.body.sqlValues,
+        table = 't_expecttickets';
+    db.queryAllWithParams(table, sqlParams, sqlValues, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+/**
+ * 查询最后一条申领卡券审核状态为已审核的记录
+ */
+app.post('/expectauth', function (req, res) {
+        sqlParams = req.body.sqlParams,
+        sqlValues = req.body.sqlValues,
+        table = 't_expecttickets';
+    db.queryAllWithParams2(table, sqlParams, sqlValues, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',

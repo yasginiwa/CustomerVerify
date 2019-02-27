@@ -3,9 +3,9 @@ const sql = require('mssql');
 const config = {
     user: 'ticketUser',
     password: 'Yasginiwa12#$',
-    server: '192.168.10.12',
+    server: 'crowncake.cn',
     database: 'ticketCustomAuth',
-    port: 1433,
+    port: 10443,
     pool: {
         min: 0,
         max: 50,
@@ -79,6 +79,19 @@ exports.queryAllWithParams = function (table, sqlParams, sqlValues, successCallb
     });
 };
 
+/**
+ * 带2参数带多值全部查询
+ */
+exports.queryAllWithParams2 = function (table, sqlParams, sqlValues, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`select * from ${table} where ${sqlParams[0]} = '${sqlValues[0]}' and ${sqlParams[1]} = '${sqlValues[1]}'`);
+    }).then(result => {
+        successCallback(result.recordset);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
+
 
 /**
  *  修改
@@ -138,6 +151,19 @@ exports.queryCountWithParam = function (table, sqlParam, sqlValue, successCallba
 exports.queryColWithParam = function (table, col, sqlParam, sqlValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
         return pool.query(`select ${col} from ${table} where ${sqlParam} = '${sqlValue}'`);
+    }).then(result => {
+        successCallback(result);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
+
+/**
+ * 查询带多参数某列数据
+ */
+exports.queryColWithParams = function (table, col, sqlParams, sqlValues, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`select ${col} from ${table} where ${sqlParams[0]} = '${sqlValues[0]}' and ${sqlParams[1]} = '${sqlValues[1]}'`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
