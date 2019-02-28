@@ -404,13 +404,14 @@ app.post('/addexpectticket', function (req, res) {
 });
 
 /**
- * 查询申领卡券审核状态为未审核的记录
+ * 查询申领卡券审核状态为未审核最近时间的记录
  */
 app.post('/expectunauth', function (req, res) {
-    sqlParams = req.body.sqlParams,
+    var sqlParams = req.body.sqlParams,
         sqlValues = req.body.sqlValues,
+        condition = req.body.condition,
         table = 't_expecttickets';
-    db.queryAllWithParams(table, sqlParams, sqlValues, function (result) {
+    db.queryWithParamDesc(table, sqlParams, sqlValues, condition,function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -429,10 +430,11 @@ app.post('/expectunauth', function (req, res) {
  * 查询最后一条申领卡券审核状态为已审核的记录
  */
 app.post('/expectauth', function (req, res) {
-    sqlParams = req.body.sqlParams,
+    var sqlParams = req.body.sqlParams,
         sqlValues = req.body.sqlValues,
+        condition = req.body.condition,
         table = 't_expecttickets';
-    db.queryAllWithParams2(table, sqlParams, sqlValues, function (result) {
+    db.queryWithParamDesc(table, sqlParams, sqlValues, condition,function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -457,5 +459,5 @@ app.post('/expectauth', function (req, res) {
 
 // https.createServer(options, app).listen(10443, '192.168.5.248');
 
-app.listen(18000, '192.168.10.214');
+app.listen(18000, '192.168.0.172');
 

@@ -183,3 +183,16 @@ exports.queryColAll = function (table, cols, successCallback, failCallback) {
         failCallback(err);
     });
 };
+
+/**
+ * 降序带参数查询
+ */
+exports.queryWithParamDesc = function (table, sqlParams, sqlValues, condition, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`select top 1 * from ${table} where ${sqlParams[0]} = '${sqlValues[0]}' and ${sqlParams[1]} = '${sqlValues[1]}' order by ${condition} DESC`);
+    }).then(result => {
+        successCallback(result);
+    }).catch(err => {
+        failCallback(err);
+    });
+}
