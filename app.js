@@ -169,9 +169,7 @@ app.post('/login', function (req, res) {
  * 查询所有客户
  */
 app.post('/auth', function (req, res) {
-    var authstatus = req.body.authstatus,
-        sqlParam = 'authstatus',
-        table = 't_registry';
+    var table = 't_expecttickets';
     db.queryAll(table, function (result) {
         res.json({
             code: 1,
@@ -193,10 +191,10 @@ app.post('/auth', function (req, res) {
 app.post('/authupdate', function (req, res) {
     var sqlParams = req.body.sqlParams,
         sqlValues = req.body.sqlValues,
-        r_id = req.body.r_id,
+        e_id = req.body.e_id,
         rangeValue = req.body.rangeValue,
-        table = 't_registry';
-    db.updateWithParams(table, sqlParams, sqlValues, r_id, rangeValue, function (result) {
+        table = 't_expecttickets';
+    db.updateWithParams(table, sqlParams, sqlValues, e_id, rangeValue, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -387,8 +385,9 @@ app.post('/addexpectticket', function (req, res) {
         expectnumbers = req.body.expectnumbers,
         expectdate = req.body.expectdate,
         authstatus = req.body.authstatus,
+        netbakeid = req.body.netbakeid,
         table = 't_expecttickets';
-    var sqlValues = `'${wxopenid}', '${company}', '${productname}', ${price}, '${expectnumbers}', '${expectdate}', '${authstatus}'`;
+    var sqlValues = `'${wxopenid}', '${company}', '${productname}', ${price}, '${expectnumbers}', '${expectdate}', '${authstatus}', '${netbakeid}'`;
     db.add(table, sqlValues, function (result) {
         res.json({
             code: 1,
@@ -408,7 +407,7 @@ app.post('/addexpectticket', function (req, res) {
  * 查询申领卡券审核状态为未审核的记录
  */
 app.post('/expectunauth', function (req, res) {
-        sqlParams = req.body.sqlParams,
+    sqlParams = req.body.sqlParams,
         sqlValues = req.body.sqlValues,
         table = 't_expecttickets';
     db.queryAllWithParams(table, sqlParams, sqlValues, function (result) {
@@ -430,7 +429,7 @@ app.post('/expectunauth', function (req, res) {
  * 查询最后一条申领卡券审核状态为已审核的记录
  */
 app.post('/expectauth', function (req, res) {
-        sqlParams = req.body.sqlParams,
+    sqlParams = req.body.sqlParams,
         sqlValues = req.body.sqlValues,
         table = 't_expecttickets';
     db.queryAllWithParams2(table, sqlParams, sqlValues, function (result) {
@@ -449,6 +448,8 @@ app.post('/expectauth', function (req, res) {
 });
 
 
+
+
 // var options = {
 //     key: fs.readFileSync('cert/server.key', 'utf-8'),
 //     cert: fs.readFileSync('cert/server.pem', 'utf-8')
@@ -456,5 +457,5 @@ app.post('/expectauth', function (req, res) {
 
 // https.createServer(options, app).listen(10443, '192.168.5.248');
 
-app.listen(18000, '192.168.0.172');
+app.listen(18000, '192.168.10.214');
 
