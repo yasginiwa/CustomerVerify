@@ -265,8 +265,9 @@ app.post('/addticket', function (req, res) {
         wxopenid = req.body.wxopenid,
         distributestatus = req.body.distributestatus,   // 状态0为未使用 1为已使用
         distributedate = req.body.distributedate,
+        expectdate = req.body.expectdate,
         table = 't_tickets';
-    sqlValue = `'${wxopenid}', '${company}', '${ticketcode}', '${ticketno}', '${productname}', '${price}',  '${distributestatus}', '${distributedate}'`;
+    sqlValue = `'${wxopenid}', '${company}', '${ticketcode}', '${ticketno}', '${productname}', '${price}',  '${distributestatus}', '${distributedate}' ,'${expectdate}'`;
     db.add(table, sqlValue, function (result) {
         res.json({
             code: 1,
@@ -309,10 +310,10 @@ app.post('/tickettotalcount', function (req, res) {
  * 查询客户已添加卡券数量
  */
 app.post('/ticketaddcount', function (req, res) {
-    var sqlParam = req.body.sqlParam,
-        sqlValue = req.body.sqlValue,
+    var sqlParams = req.body.sqlParams,
+        sqlValues = req.body.sqlValues,
         table = 't_tickets';
-    db.queryCountWithParam(table, sqlParam, sqlValue, function (result) {
+    db.queryCountWithParams(table, sqlParams, sqlValues, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -335,6 +336,8 @@ app.post('/tickets', function (req, res) {
         sqlValue = req.body.sqlValue,
         table = 't_tickets';
     db.queryWithParam(table, sqlParam, sqlValue, function (result) {
+
+
         res.json({
             code: 1,
             msg: '提交成功',
@@ -411,7 +414,7 @@ app.post('/expectunauth', function (req, res) {
         sqlValues = req.body.sqlValues,
         condition = req.body.condition,
         table = 't_expecttickets';
-    db.queryWithParamDesc(table, sqlParams, sqlValues, condition,function (result) {
+    db.queryWithParamDesc(table, sqlParams, sqlValues, condition, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -434,7 +437,7 @@ app.post('/expectauth', function (req, res) {
         sqlValues = req.body.sqlValues,
         condition = req.body.condition,
         table = 't_expecttickets';
-    db.queryWithParamDesc(table, sqlParams, sqlValues, condition,function (result) {
+    db.queryWithParamDesc(table, sqlParams, sqlValues, condition, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -450,8 +453,6 @@ app.post('/expectauth', function (req, res) {
 });
 
 
-
-
 // var options = {
 //     key: fs.readFileSync('cert/server.key', 'utf-8'),
 //     cert: fs.readFileSync('cert/server.pem', 'utf-8')
@@ -459,5 +460,5 @@ app.post('/expectauth', function (req, res) {
 
 // https.createServer(options, app).listen(10443, '192.168.5.248');
 
-app.listen(18000, '192.168.0.172');
+app.listen(18000, '192.168.10.214');
 

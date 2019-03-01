@@ -135,9 +135,9 @@ exports.queryTotalCount = function (table, successCallback, failCallback) {
 /**
  * 带一个参数查询记录个数
  */
-exports.queryCountWithParam = function (table, sqlParam, sqlValue, successCallback, failCallback) {
+exports.queryCountWithParams = function (table, sqlParams, sqlValues, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`select count(*) as addcount from ${table} where ${sqlParam} = '${sqlValue}'`);
+        return pool.query(`select count(*) as addcount from ${table} where ${sqlParams[0]} = '${sqlValues[0]}' and ${sqlParams[1]} = '${sqlValues[1]}'`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
