@@ -336,7 +336,25 @@ app.post('/tickets', function (req, res) {
         sqlValue = req.body.sqlValue,
         table = 't_tickets';
     db.queryWithParam(table, sqlParam, sqlValue, function (result) {
+        var expectdates = [];
 
+        function uniq(arr) {
+            var ret = [];
+            for (var i = 0; i < arr.length; i++) {
+                if (arr.indexOf(arr[i]) === i) {
+                    ret.push(arr[i]);
+                }
+            }
+            return ret;
+        }
+
+        for (var i = 0; i < result.length; i++) {
+            var ticket = result[i];
+            var expectdate = JSON.stringify(ticket.expectdate);
+            expectdates.push(expectdate);
+        }
+
+        var uniqExpectdates = uniq(expectdates);
 
         res.json({
             code: 1,
