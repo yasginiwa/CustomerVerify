@@ -1,6 +1,7 @@
 var db = require('./module/DBUtil.js');
 var express = require('express');
 var bodyParser = require('body-parser');
+var multiParty = require('multiparty');
 var https = require('https');
 var fs = require('fs');
 var request = require('request');
@@ -10,6 +11,41 @@ var app = new express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+
+/**
+ * 设置upload为静态文件夹
+ */
+app.use('/upload', express.static('upload'));
+
+
+/**
+ * post上传图片
+ */
+app.post('/upload', function (req, res) {
+    var form = new multiParty.Form();
+    form.uploadDir = 'upload';
+    form.keepExtensions = true;
+    form.parse(req, function (error, fields, files) {
+        console.log(files);
+        if (error) res.json({
+            code: 0,
+            msg: 'Upload Failed'
+        });
+        if (files != null) {
+            res.json({
+                code: 1,
+                msg: 'ok',
+                coverUrl: 'http://192.168.0.172:18000/' + files.cover[0].path
+            })
+        } else {
+            res.json({
+                status: 0,
+                msg: 'Cover Null',
+                coverUrl: null
+            })
+        }
+    });
+});
 
 
 /**
@@ -124,10 +160,10 @@ app.post('/registry', function (req, res) {
         company = req.body.company,
         contact = req.body.contact,
         phone = req.body.phone,
+        regdate = req.body.regdate,
         authstatus = (req.body.authstatus.length) ? req.body.authstatus : 0,
-        regdate = (req.body.regdate),
         table = 't_registry',
-        sqlValues = `'${wxopenid}', '${company}', '${contact}', '${phone}', '${authstatus}', '${regdate}'`;
+        sqlValues = `'${wxopenid}', '${company}', '${contact}', '${phone}', '${regdate}', '${authstatus}'`;
     db.add(table, sqlValues, function (result) {
         res.json({
             code: 1,
@@ -142,6 +178,32 @@ app.post('/registry', function (req, res) {
         });
     })
 });
+
+/**
+ * 审核客户注册信息
+ */
+app.post('/updateregistry', function (req, res) {
+    var sqlParam = req.body.sqlParam,
+        sqlValue = req.body.sqlValue,
+        rangeParam = req.body.rangeParam,
+        rangeValue = req.body.rangeValue;
+        table = 't_registry';
+        console.log(sqlParam, sqlValue, rangeParam, rangeValue);
+    db.update(table, sqlParam, sqlValue, rangeParam, rangeValue, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
 
 /**
  * 客户审核管理登录
@@ -191,10 +253,10 @@ app.post('/auth', function (req, res) {
 app.post('/authupdate', function (req, res) {
     var sqlParams = req.body.sqlParams,
         sqlValues = req.body.sqlValues,
-        e_id = req.body.e_id,
+        rangeParam = req.body.rangeParam,
         rangeValue = req.body.rangeValue,
         table = 't_expecttickets';
-    db.updateWithParams(table, sqlParams, sqlValues, e_id, rangeValue, function (result) {
+    db.updateWithParams(table, sqlParams, sqlValues, rangeParam, rangeValue, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -235,10 +297,10 @@ app.post('/queryauth', function (req, res) {
  * 认证时删除多余无用的注册信息
  */
 app.post('/authdel', function (req, res) {
-    var r_id = req.body.r_id,
+    var e_id = req.body.e_id,
         sqlValue = req.body.sqlValue,
-        table = 't_registry';
-    db.del(table, r_id, sqlValue, function (result) {
+        table = 't_expecttickets';
+    db.del(table, e_id, sqlValue, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -338,6 +400,7 @@ app.post('/tickets', function (req, res) {
     db.queryWithParam(table, sqlParam, sqlValue, function (result) {
         var expectdates = [];
 
+        //  数组去重
         function uniq(arr) {
             var ret = [];
             for (var i = 0; i < arr.length; i++) {
@@ -348,18 +411,39 @@ app.post('/tickets', function (req, res) {
             return ret;
         }
 
+        //  去除所有的申领卡券的日期
         for (var i = 0; i < result.length; i++) {
             var ticket = result[i];
             var expectdate = JSON.stringify(ticket.expectdate);
             expectdates.push(expectdate);
         }
 
+        //  日期去重
         var uniqExpectdates = uniq(expectdates);
+
+        //  把数组分成以日期为依据的若干个数组
+        var ret = [];
+        for (var j = 0; j < uniqExpectdates.length; j++) {
+            expectdate = uniqExpectdates[j];
+            var arr = [];
+            for (var k = 0; k < result.length; k++) {
+                ticket = result[k];
+                if (JSON.stringify(ticket.expectdate) === expectdate) {
+                    arr.push(ticket);
+                    var obj = {
+                        'expectdate': ticket.expectdate,
+                        'expecttickets': arr
+                    };
+                }
+
+            }
+            ret.push(obj);
+        }
 
         res.json({
             code: 1,
             msg: '提交成功',
-            result: result
+            result: ret
         })
     }, function (error) {
         res.json({
@@ -407,8 +491,9 @@ app.post('/addexpectticket', function (req, res) {
         expectdate = req.body.expectdate,
         authstatus = req.body.authstatus,
         netbakeid = req.body.netbakeid,
+        cover = req.body.cover,
         table = 't_expecttickets';
-    var sqlValues = `'${wxopenid}', '${company}', '${productname}', ${price}, '${expectnumbers}', '${expectdate}', '${authstatus}', '${netbakeid}'`;
+    var sqlValues = `'${wxopenid}', '${company}', '${productname}', ${price}, '${expectnumbers}', '${expectdate}', '${authstatus}', '${netbakeid}', '${cover}'`;
     db.add(table, sqlValues, function (result) {
         res.json({
             code: 1,
@@ -472,11 +557,11 @@ app.post('/expectauth', function (req, res) {
 
 
 // var options = {
-//     key: fs.readFileSync('cert/server.key', 'utf-8'),
-//     cert: fs.readFileSync('cert/server.pem', 'utf-8')
+//     key: fs.readFileSync('cert/ticketapi.hgsp.cn.key', 'utf-8'),
+//     cert: fs.readFileSync('cert/ticketapi.hgsp.cn.pem', 'utf-8')
 // };
+//
+// https.createServer(options, app).listen(10444, '192.168.5.248');
 
-// https.createServer(options, app).listen(10443, '192.168.5.248');
-
-app.listen(18000, '192.168.10.214');
+app.listen(18000, '192.168.0.172');
 

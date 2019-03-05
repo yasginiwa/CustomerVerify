@@ -98,7 +98,7 @@ exports.queryAllWithParams2 = function (table, sqlParams, sqlValues, successCall
  */
 exports.update = function (table, sqlParam, sqlValue, rangeParam, rangeValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`update ${table} set ${sqlParam} = '${sqlValue}' where ${rangeParam} = ${rangeValue}`);
+        return pool.query(`update ${table} set ${sqlParam} = '${sqlValue}' where ${rangeParam} = '${rangeValue}'`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
@@ -176,7 +176,7 @@ exports.queryColWithParams = function (table, col, sqlParams, sqlValues, success
  */
 exports.queryColAll = function (table, cols, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`select ${cols[0]}, ${cols[1]}, ${cols[2]}, ${cols[3]}, ${cols[4]} from ${table}`);
+        return pool.query(`select ${cols[0]}, ${cols[1]}, ${cols[2]}, ${cols[3]}, ${cols[4]}, ${cols[5]} from ${table}`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
