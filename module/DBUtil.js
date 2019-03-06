@@ -195,4 +195,17 @@ exports.queryWithParamDesc = function (table, sqlParams, sqlValues, condition, s
     }).catch(err => {
         failCallback(err);
     });
+};
+
+/**
+ * 联合查询
+ */
+exports.joinQueryWithParam = function (successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query('select t_expecttickets.e_id, t_expecttickets.wxopenid, t_expecttickets.company, t_registry.contact, t_registry.phone, t_expecttickets.productname, t_expecttickets.price, t_expecttickets.expectnumbers, t_expecttickets.netbakeid, t_expecttickets.expectdate, t_expecttickets.authstatus from t_expecttickets, t_registry where t_expecttickets.wxopenid = t_registry.wxopenid');
+    }).then(result => {
+        successCallback(result);
+    }).catch(err => {
+        failCallback(err);
+    })
 }

@@ -26,7 +26,6 @@ app.post('/upload', function (req, res) {
     form.uploadDir = 'upload';
     form.keepExtensions = true;
     form.parse(req, function (error, fields, files) {
-        console.log(files);
         if (error) res.json({
             code: 0,
             msg: 'Upload Failed'
@@ -137,6 +136,25 @@ app.post('/querywxopenids', function (req, res) {
     var cols = req.body.cols,
         table = 't_registry';
     db.queryColAll(table, cols, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+/**
+ * 联合查询某wxopenid对应的注册信息和申请券信息
+ */
+app.post('/queryregistry', function (req, res) {
+    db.joinQueryWithParam(function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
@@ -272,7 +290,7 @@ app.post('/authupdate', function (req, res) {
 });
 
 /**
- * 查询审核是否通过 不通过UI则显示审核进度页面
+ * 查询审核是否通过
  */
 app.post('/queryauth', function (req, res) {
     var sqlParams = req.body.sqlParams,
@@ -563,5 +581,5 @@ app.post('/expectauth', function (req, res) {
 //
 // https.createServer(options, app).listen(10444, '192.168.5.248');
 
-app.listen(18000, '192.168.0.172');
+app.listen(18000, '192.168.10.214');
 
