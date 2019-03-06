@@ -28,6 +28,19 @@ exports.add = function (table, sqlValues, successCallback, failCallback) {
 };
 
 /**
+ *  插入指定值
+ */
+exports.addWithParams = function (table, sqlParams, sqlValues, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`insert into ${table} (${sqlParams[0]}, ${sqlParams[1]}, ${sqlParams[2]}, ${sqlParams[3]}, ${sqlParams[4]}, ${sqlParams[5]}) values('${sqlValues[0]}', '${sqlValues[1]}', '${sqlValues[2]}', '${sqlValues[3]}', '${sqlValues[4]}', '${sqlValues[5]}')`);
+    }).then(result => {
+        successCallback(result);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
+
+/**
  *  删除
  */
 exports.del = function (table, sqlParma, sqlValue, successCallback, failCallback) {

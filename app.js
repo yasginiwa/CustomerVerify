@@ -501,23 +501,15 @@ app.post('/updatedistributestatus', function (req, res) {
  * 添加申领卡券到数据库
  */
 app.post('/addexpectticket', function (req, res) {
-    var wxopenid = req.body.wxopenid,
-        company = req.body.company,
-        productname = req.body.productname,
-        price = req.body.price,
-        expectnumbers = req.body.expectnumbers,
-        expectdate = req.body.expectdate,
-        authstatus = req.body.authstatus,
-        netbakeid = req.body.netbakeid,
-        cover = req.body.cover,
+    var sqlParams = req.body.sqlParams,
+        sqlValues = req.body.sqlValues,
         table = 't_expecttickets';
-    var sqlValues = `'${wxopenid}', '${company}', '${productname}', ${price}, '${expectnumbers}', '${expectdate}', '${authstatus}', '${netbakeid}', '${cover}'`;
-    db.add(table, sqlValues, function (result) {
+    db.addWithParams(table, sqlParams, sqlValues, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
             result: result
-        })
+        });
     }, function (error) {
         res.json({
             code: 0,
@@ -581,5 +573,5 @@ app.post('/expectauth', function (req, res) {
 //
 // https.createServer(options, app).listen(10444, '192.168.5.248');
 
-app.listen(18000, '192.168.10.214');
+app.listen(18000, '192.168.0.172');
 
