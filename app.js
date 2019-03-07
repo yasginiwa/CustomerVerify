@@ -8,6 +8,9 @@ var request = require('request');
 var querystring = require('querystring');
 
 var app = new express();
+var host = 'http://192.168.5.248',
+    port = '10444';
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -34,7 +37,7 @@ app.post('/upload', function (req, res) {
             res.json({
                 code: 1,
                 msg: 'ok',
-                coverUrl: 'http://192.168.0.172:18000/' + files.cover[0].path
+                coverUrl: `${host}:${port}/${files.cover[0].path}`
             })
         } else {
             res.json({
@@ -206,7 +209,6 @@ app.post('/updateregistry', function (req, res) {
         rangeParam = req.body.rangeParam,
         rangeValue = req.body.rangeValue;
         table = 't_registry';
-        console.log(sqlParam, sqlValue, rangeParam, rangeValue);
     db.update(table, sqlParam, sqlValue, rangeParam, rangeValue, function (result) {
         res.json({
             code: 1,
@@ -274,6 +276,7 @@ app.post('/authupdate', function (req, res) {
         rangeParam = req.body.rangeParam,
         rangeValue = req.body.rangeValue,
         table = 't_expecttickets';
+    console.log(sqlParams, sqlValues);
     db.updateWithParams(table, sqlParams, sqlValues, rangeParam, rangeValue, function (result) {
         res.json({
             code: 1,
@@ -346,8 +349,9 @@ app.post('/addticket', function (req, res) {
         distributestatus = req.body.distributestatus,   // 状态0为未使用 1为已使用
         distributedate = req.body.distributedate,
         expectdate = req.body.expectdate,
+        cover = req.body.cover,
         table = 't_tickets';
-    sqlValue = `'${wxopenid}', '${company}', '${ticketcode}', '${ticketno}', '${productname}', '${price}',  '${distributestatus}', '${distributedate}' ,'${expectdate}'`;
+    sqlValue = `'${wxopenid}', '${company}', '${ticketcode}', '${ticketno}', '${productname}', '${price}',  '${distributestatus}', '${distributedate}' ,'${expectdate}', '${cover}'`;
     db.add(table, sqlValue, function (result) {
         res.json({
             code: 1,
@@ -565,13 +569,35 @@ app.post('/expectauth', function (req, res) {
     })
 });
 
+/**
+ * 查询券编号对应的券封面cover
+ */
+app.post('/queryticketcover', function (req, res) {
+    var sqlParam = req.body.sqlParam,
+        sqlValue = req.body.sqlValue,
+        table = 't_tickets';
+    db.queryWithParam(table, sqlParam, sqlValue, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
 
-// var options = {
-//     key: fs.readFileSync('cert/ticketapi.hgsp.cn.key', 'utf-8'),
-//     cert: fs.readFileSync('cert/ticketapi.hgsp.cn.pem', 'utf-8')
-// };
-//
-// https.createServer(options, app).listen(10444, '192.168.5.248');
 
-app.listen(18000, '192.168.0.172');
+var options = {
+    key: fs.readFileSync('cert/ticketapi.hgsp.cn.key', 'utf-8'),
+    cert: fs.readFileSync('cert/ticketapi.hgsp.cn.pem', 'utf-8')
+};
+
+https.createServer(options, app).listen(port, host);
+
+// app.listen(port, host);
 

@@ -3,9 +3,9 @@ const sql = require('mssql');
 const config = {
     user: 'ticketUser',
     password: 'Yasginiwa12#$',
-    server: 'crowncake.cn',
+    server: '192.168.10.20',
     database: 'ticketCustomAuth',
-    port: 10443,
+    port: 1443,
     pool: {
         min: 0,
         max: 50,
@@ -124,7 +124,7 @@ exports.update = function (table, sqlParam, sqlValue, rangeParam, rangeValue, su
  */
 exports.updateWithParams = function (table, sqlParams, sqlValues, rangeParam, rangeValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query(`update ${table} set ${sqlParams[0]} = '${sqlValues[0]}', ${sqlParams[1]} = '${sqlValues[1]}'  where ${rangeParam} = '${rangeValue}'`);
+        return pool.query(`update ${table} set ${sqlParams[0]} = '${sqlValues[0]}', ${sqlParams[1]} = '${sqlValues[1]}', ${sqlParams[2]} = '${sqlValues[2]}', ${sqlParams[3]} = '${sqlValues[3]}' where ${rangeParam} = '${rangeValue}'`);
     }).then(result => {
         successCallback(result);
     }).catch(err => {
