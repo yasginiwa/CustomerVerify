@@ -3,9 +3,9 @@ const sql = require('mssql');
 const config = {
     user: 'ticketUser',
     password: 'Yasginiwa12#$',
-    server: '192.168.10.20',
+    server: '192.168.10.12',
     database: 'ticketCustomAuth',
-    port: 1443,
+    port: 1433,
     pool: {
         min: 0,
         max: 50,

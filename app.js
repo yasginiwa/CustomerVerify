@@ -8,7 +8,7 @@ var request = require('request');
 var querystring = require('querystring');
 
 var app = new express();
-var host = 'http://192.168.5.248',
+var host = '192.168.5.248',
     port = '10444';
 
 
