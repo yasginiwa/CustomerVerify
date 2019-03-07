@@ -9,7 +9,8 @@ var querystring = require('querystring');
 
 var app = new express();
 var host = '192.168.5.248',
-    port = '10444';
+    port = '10444',
+    protocol = 'https';
 
 
 app.use(bodyParser.json());
@@ -37,7 +38,7 @@ app.post('/upload', function (req, res) {
             res.json({
                 code: 1,
                 msg: 'ok',
-                coverUrl: `${host}:${port}/${files.cover[0].path}`
+                coverUrl: `${protocol}://ticketapi.hgsp.cn:${port}/${files.cover[0].path}`
             })
         } else {
             res.json({

@@ -1,11 +1,14 @@
 const sql = require('mssql');
 
+let DBServer = '192.168.10.12',
+    DBPort = '1433';
+
 const config = {
     user: 'ticketUser',
     password: 'Yasginiwa12#$',
-    server: '192.168.10.12',
+    server: DBServer,
     database: 'ticketCustomAuth',
-    port: 1433,
+    port: DBPort,
     pool: {
         min: 0,
         max: 50,
