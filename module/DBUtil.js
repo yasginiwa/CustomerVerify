@@ -1,7 +1,7 @@
 const sql = require('mssql');
 
-let DBServer = '192.168.10.12',
-    DBPort = '1433';
+let DBServer = 'crowncake.cn',
+    DBPort = '10443';
 
 const config = {
     user: 'ticketUser',

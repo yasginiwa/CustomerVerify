@@ -8,7 +8,7 @@ var request = require('request');
 var querystring = require('querystring');
 
 var app = new express();
-var host = '192.168.5.248',
+var host = '192.168.0.172',
     port = '10444',
     protocol = 'https';
 
@@ -593,12 +593,37 @@ app.post('/queryticketcover', function (req, res) {
 });
 
 
-var options = {
-    key: fs.readFileSync('cert/ticketapi.hgsp.cn.key', 'utf-8'),
-    cert: fs.readFileSync('cert/ticketapi.hgsp.cn.pem', 'utf-8')
-};
+app.post('/userregistry', function (req, res) {
+    var wxopenid = req.body.wxopenid,
+        username = req.body.username,
+        password = req.body.password,
+        phone = req.body.phone,
+        superuser = req.body.superuser,
+        granted = req.body.granted,
+        table = 't_user',
+        sqlValues = `'${wxopenid}', '${username}', '${password}', '${phone}', '${superuser}', '${granted}'`;
+    db.add(table, sqlValues, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
 
-https.createServer(options, app).listen(port, host);
 
-// app.listen(port, host);
+// var options = {
+//     key: fs.readFileSync('cert/ticketapi.hgsp.cn.key', 'utf-8'),
+//     cert: fs.readFileSync('cert/ticketapi.hgsp.cn.pem', 'utf-8')
+// };
+//
+// https.createServer(options, app).listen(port, host);
+
+app.listen(port, host);
 
