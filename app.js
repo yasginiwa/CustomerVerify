@@ -52,11 +52,41 @@ app.post('/upload', function (req, res) {
 
 
 /**
- * 获取wxopenid
+ * 获取皇冠卡券wxopenid
  */
-app.post('/getwxopenid', function (req, res) {
+app.post('/getcrowncakecardwxopenid', function (req, res) {
     var appid = 'wx7fc7b53df0fe91d2',
         secret = '64fa906971b92a829115e5011ba92aa5',
+        js_code = req.body.js_code,
+        grant_type = 'authorization_code',
+        url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${js_code}&grant_type=${grant_type}`;
+
+    request(url, function (error, response) {
+        if (!error && response.statusCode === 200) {
+            var result = {
+                wxopenid: JSON.parse(response.body).openid
+            };
+            res.json({
+                code: 1,
+                msg: '提交成功',
+                result: result
+            });
+        } else {
+            res.json({
+                code: 0,
+                msg: '提交失败',
+                result: error
+            });
+        }
+    })
+});
+
+/**
+ * 获取皇冠卡券审核wxopenid
+ */
+app.post('/getticketauthwxopenid', function (req, res) {
+    var appid = 'wx655016ae5b6c5b1a',
+        secret = '2a9faf8d39aea13763bb2c22af711a17',
         js_code = req.body.js_code,
         grant_type = 'authorization_code',
         url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${js_code}&grant_type=${grant_type}`;
