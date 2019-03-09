@@ -135,6 +135,16 @@ exports.updateWithParams = function (table, sqlParams, sqlValues, rangeParam, ra
     });
 };
 
+exports.updateWithParam2 = function (table, sqlParams, sqlValues, rangeParam, rangeValue, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`update ${table} set ${sqlParams[0]} = '${sqlValues[0]}', ${sqlParams[1]} = '${sqlValues[1]}' where ${rangeParam} = '${rangeValue}'`);
+    }).then(result => {
+        successCallback(result);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
+
 /**
  * 查询表记录总数
  */

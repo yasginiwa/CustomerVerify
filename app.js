@@ -8,7 +8,7 @@ var request = require('request');
 var querystring = require('querystring');
 
 var app = new express();
-var host = '192.168.0.172',
+var host = '192.168.10.214',
     port = '10444',
     protocol = 'https';
 
@@ -638,6 +638,74 @@ app.post('/userregistry', function (req, res) {
             msg: '提交成功',
             result: result
         })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+/**
+ * 卡券审核-查询所有用户
+ */
+app.post('/userauth', function (req, res) {
+    var table = 't_user';
+    db.queryAll(table, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        });
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+/**
+ * 删除一个卡券审核-用户（信息填写错误）
+ */
+/**
+ * 认证时删除多余无用的注册信息
+ */
+app.post('/userdel', function (req, res) {
+    var sqlParam = req.body.sqlParam,
+        sqlValue = req.body.sqlValue,
+        table = 't_user';
+    db.del(table, sqlParam, sqlValue, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        })
+    }, function (error) {
+        res.json({
+            code: 0,
+            msg: '提交失败',
+            result: error
+        });
+    })
+});
+
+
+app.post('/userupdate', function (req, res) {
+    var sqlParams = req.body.sqlParams,
+        sqlValues = req.body.sqlValues,
+        rangeParam = req.body.rangeParam,
+        rangeValue = req.body.rangeValue,
+        table = 't_user';
+    console.log(sqlParams, sqlValues);
+    db.updateWithParam2(table, sqlParams, sqlValues, rangeParam, rangeValue, function (result) {
+        res.json({
+            code: 1,
+            msg: '提交成功',
+            result: result
+        });
     }, function (error) {
         res.json({
             code: 0,
