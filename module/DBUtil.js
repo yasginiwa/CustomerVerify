@@ -125,6 +125,19 @@ exports.update = function (table, sqlParam, sqlValue, rangeParam, rangeValue, su
 /**
  * 带多参数修改
  */
+exports.updateWithParams6 = function (table, sqlParams, sqlValues, rangeParam, rangeValue, successCallback, failCallback) {
+    new sql.ConnectionPool(config).connect().then(pool => {
+        return pool.query(`update ${table} set ${sqlParams[0]} = '${sqlValues[0]}', ${sqlParams[1]} = '${sqlValues[1]}', ${sqlParams[2]} = '${sqlValues[2]}', ${sqlParams[3]} = '${sqlValues[3]}', ${sqlParams[4]} = '${sqlValues[4]}', ${sqlParams[5]} = '${sqlValues[5]}' where ${rangeParam} = '${rangeValue}'`);
+    }).then(result => {
+        successCallback(result);
+    }).catch(err => {
+        failCallback(err);
+    });
+};
+
+/**
+ * 带多参数修改
+ */
 exports.updateWithParams = function (table, sqlParams, sqlValues, rangeParam, rangeValue, successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
         return pool.query(`update ${table} set ${sqlParams[0]} = '${sqlValues[0]}', ${sqlParams[1]} = '${sqlValues[1]}', ${sqlParams[2]} = '${sqlValues[2]}', ${sqlParams[3]} = '${sqlValues[3]}' where ${rangeParam} = '${rangeValue}'`);
@@ -228,7 +241,7 @@ exports.queryWithParamDesc = function (table, sqlParams, sqlValues, condition, s
  */
 exports.joinQueryWithParam = function (successCallback, failCallback) {
     new sql.ConnectionPool(config).connect().then(pool => {
-        return pool.query('select t_expecttickets.e_id, t_expecttickets.wxopenid, t_expecttickets.company, t_registry.contact, t_registry.phone, t_expecttickets.productname, t_expecttickets.price, t_expecttickets.expectnumbers, t_expecttickets.netbakeid, t_expecttickets.expectdate, t_expecttickets.authstatus from t_expecttickets, t_registry where t_expecttickets.wxopenid = t_registry.wxopenid');
+        return pool.query('select t_expecttickets.e_id, t_expecttickets.wxopenid, t_expecttickets.company, t_registry.contact, t_registry.phone, t_expecttickets.productname, t_expecttickets.price, t_expecttickets.expectnumbers, t_expecttickets.netbakeid, t_expecttickets.expectdate, t_expecttickets.authstatus, t_expecttickets.limitstartdate, t_expecttickets.limitenddate from t_expecttickets, t_registry where t_expecttickets.wxopenid = t_registry.wxopenid');
     }).then(result => {
         successCallback(result);
     }).catch(err => {

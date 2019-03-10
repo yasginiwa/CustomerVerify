@@ -8,9 +8,9 @@ var request = require('request');
 var querystring = require('querystring');
 
 var app = new express();
-var host = '192.168.10.214',
+var host = '192.168.0.172',
     port = '10444',
-    protocol = 'https';
+    protocol = 'http';
 
 
 app.use(bodyParser.json());
@@ -38,7 +38,7 @@ app.post('/upload', function (req, res) {
             res.json({
                 code: 1,
                 msg: 'ok',
-                coverUrl: `${protocol}://ticketapi.hgsp.cn:${port}/${files.cover[0].path}`
+                coverUrl: `${protocol}://192.168.0.172:${port}/${files.cover[0].path}`
             })
         } else {
             res.json({
@@ -308,7 +308,7 @@ app.post('/authupdate', function (req, res) {
         rangeValue = req.body.rangeValue,
         table = 't_expecttickets';
     console.log(sqlParams, sqlValues);
-    db.updateWithParams(table, sqlParams, sqlValues, rangeParam, rangeValue, function (result) {
+    db.updateWithParams6(table, sqlParams, sqlValues, rangeParam, rangeValue, function (result) {
         res.json({
             code: 1,
             msg: '提交成功',
