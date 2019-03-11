@@ -8,9 +8,8 @@ var request = require('request');
 var querystring = require('querystring');
 
 var app = new express();
-var host = '192.168.10.214',
-    port = '10444',
-    protocol = 'http';
+var host = '192.168.0.172',
+    port = 10444;
 
 
 app.use(bodyParser.json());
@@ -38,7 +37,7 @@ app.post('/upload', function (req, res) {
             res.json({
                 code: 1,
                 msg: 'ok',
-                coverUrl: `${protocol}://192.168.10.214:${port}/${files.cover[0].path}`
+                coverUrl: `http://192.168.0.172:${port}/${files.cover[0].path}`
             })
         } else {
             res.json({
